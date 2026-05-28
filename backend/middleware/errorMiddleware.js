@@ -1,10 +1,25 @@
-const errorHandler = (err, req, res, next) => {
+/**
+ * Global centralized error handling middleware.
+ */
+const errorMiddleware = (err, req, res, next) => {
   if (err.code === 11000) {
     return res.status(400).json({ success: false, message: 'User already exists' });
   }
 
   if (err.name === 'CastError') {
     return res.status(400).json({ success: false, message: 'Invalid ID' });
+  }
+
+  if (err.name === 'MulterError') {
+    const message =
+      err.code === 'LIMIT_FILE_SIZE'
+        ? 'Image must be smaller than 5MB'
+        : err.message;
+    return res.status(400).json({ success: false, message });
+  }
+
+  if (err.message === 'Only image files are allowed') {
+    return res.status(400).json({ success: false, message: err.message });
   }
 
   if (err.name === 'ValidationError') {
@@ -16,4 +31,4 @@ const errorHandler = (err, req, res, next) => {
   res.status(500).json({ success: false, message: 'Server error' });
 };
 
-export default errorHandler;
+export default errorMiddleware;

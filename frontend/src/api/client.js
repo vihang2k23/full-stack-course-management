@@ -2,11 +2,18 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 export async function apiRequest(path, options = {}) {
   const token = localStorage.getItem('token');
+  const isFormData = options.body instanceof FormData;
 
   const headers = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...options.headers,
   };
+
+  // Never send application/json with FormData (breaks file upload)
+  if (isFormData) {
+    delete headers['Content-Type'];
+    delete headers['content-type'];
+  }
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;

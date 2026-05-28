@@ -46,3 +46,12 @@ npm run dev
 `http://localhost:3000/api/v1`
 
 Frontend uses `VITE_API_URL` from `frontend/.env`.
+
+## Forgot password
+
+1. `POST /auth/forgot-password` — sends OTP email
+2. `POST /auth/verify-otp` — verify OTP, get short reset JWT
+3. `POST /auth/reset-password` — set new password
+
+Add SMTP settings to `backend/.env` (see `backend/.env.example`).
+Gmail: use an [App Password](https://myaccount.google.com/apppasswords), not your normal password.

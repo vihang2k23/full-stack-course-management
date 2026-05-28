@@ -1,6 +1,9 @@
 import { validationResult } from 'express-validator';
 
-const validate = (req, res, next) => {
+/**
+ * Runs after express-validator chains and returns 400 if any rule failed.
+ */
+const validateMiddleware = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -17,4 +20,4 @@ const validate = (req, res, next) => {
   next();
 };
 
-export default validate;
+export default validateMiddleware;

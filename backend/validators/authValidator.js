@@ -1,12 +1,17 @@
 import { body } from 'express-validator';
-import ROLES from '../constants/roles.js';
+import ROLES from '../constants/roles.constants.js';
 
+/**
+ * Validation rules for user registration.
+ * Ensures data integrity and enforces security constraints (like password strength)
+ * before the request hits the controller.
+ */
 export const signupValidation = [
   body('name')
     .trim()
     .notEmpty()
     .withMessage('Name is required')
-    .bail()
+    .bail() // Stops running further validations on this field if the previous ones failed
     .isLength({ min: 2 })
     .withMessage('Name must be at least 2 characters'),
 
@@ -17,7 +22,7 @@ export const signupValidation = [
     .bail()
     .isEmail()
     .withMessage('Please provide a valid email')
-    .normalizeEmail(),
+    .normalizeEmail(), // Converts the email to a standard format (e.g., lowercase)
 
   body('password')
     .notEmpty()
@@ -32,6 +37,10 @@ export const signupValidation = [
     .withMessage('Invalid role'),
 ];
 
+/**
+ * Validation rules for user login.
+ * Basic checks to ensure required fields are present and formatted correctly.
+ */
 export const loginValidation = [
   body('email')
     .trim()

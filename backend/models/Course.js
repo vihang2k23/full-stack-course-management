@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 
+/**
+ * Mongoose schema definition for the Course model.
+ * Maps directly to the 'courses' collection in MongoDB.
+ */
 const courseSchema = new mongoose.Schema(
   {
     courseName: {
@@ -16,6 +20,10 @@ const courseSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'Course fees is required'],
       min: [0, 'Course fees cannot be negative'],
+    },
+    image: {
+      type: String,
+      default: '',
     },
   },
   { timestamps: true }

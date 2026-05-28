@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
-import ROLES from '../constants/roles.js';
+import ROLES from '../constants/roles.constants.js';
 
+/**
+ * Mongoose schema definition for the User model.
+ * Handles core user data, authentication state, and password reset fields.
+ */
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -11,7 +15,7 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, 'Email is required'],
-      unique: true,
+      unique: true, // Ensures no two users can register with the same email
     },
     password: {
       type: String,
@@ -20,14 +24,29 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: Object.values(ROLES),
+      enum: Object.values(ROLES), // Restricts role values to predefined constants (e.g., USER, ADMIN)
       default: ROLES.USER,
     },
+    // Used to track the active session. If null, the user is logged out.
     token: {
       type: String,
       default: null,
     },
+    // --- Temporary fields used exclusively for the forgot/reset password flow ---
+    resetOtp: {
+      type: String,
+      default: null, // Stores the hashed OTP securely
+    },
+    resetToken: {
+      type: String,
+      default: null, // Stores the session token mapping to the current OTP request
+    },
+    resetExpires: {
+      type: Date,
+      default: null, // Expiration timestamp for the OTP
+    },
   },
+  // Automatically manages 'createdAt' and 'updatedAt' timestamps
   { timestamps: true }
 );
 
