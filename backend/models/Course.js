@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 
-/**
- * Mongoose schema definition for the Course model.
- * Maps directly to the 'courses' collection in MongoDB.
- */
+// Mongoose schema definition for the Course model.
+// Maps directly to the 'courses' collection in MongoDB.
 const courseSchema = new mongoose.Schema(
   {
     courseName: {

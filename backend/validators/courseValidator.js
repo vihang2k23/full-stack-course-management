@@ -2,18 +2,14 @@ import { body, param } from 'express-validator';
 import { COURSE_IMAGE_FIELD } from '../constants/upload.constants.js';
 import { requireUploadedImage } from './uploadValidator.js';
 
-/**
- * Validates that route parameters intended to be MongoDB ObjectIds are structurally valid.
- * Prevents unnecessary database queries and CastErrors.
- */
+// Validates that route parameters intended to be MongoDB ObjectIds are structurally valid.
+// Prevents unnecessary database queries and CastErrors.
 export const courseIdValidation = [
   param('id').isMongoId().withMessage('Invalid course ID'),
 ];
 
-/**
- * Strict validation for creating a new course.
- * All fields are required to guarantee data completeness.
- */
+// Strict validation for creating a new course.
+// All fields are required to guarantee data completeness.
 export const createCourseValidation = [
   body('courseName')
     .trim()
@@ -35,10 +31,8 @@ export const createCourseValidation = [
   ...requireUploadedImage(COURSE_IMAGE_FIELD),
 ];
 
-/**
- * Relaxed validation for updating a course.
- * Fields are optional, but if provided, they must conform to the correct types and constraints.
- */
+// Relaxed validation for updating a course.
+// Fields are optional, but if provided, they must conform to the correct types and constraints.
 export const updateCourseValidation = [
   body('courseName')
     .optional()

@@ -1,4 +1,4 @@
-/** Set new password — final step after OTP verification */
+// Set new password — final step after OTP verification
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { resetPassword } from '../api/auth';

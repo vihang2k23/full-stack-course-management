@@ -1,6 +1,4 @@
-/**
- * Authentication routes: signup, login, profile, logout, and password reset flow.
- */
+// Authentication routes: signup, login, profile, logout, and password reset flow.
 import express from 'express';
 import {
   signup,
@@ -33,7 +31,7 @@ import ROLES from '../constants/roles.constants.js';
 // Multer middleware — expects form field name "image"
 const profileImageUpload = userUpload.single(USER_IMAGE_FIELD);
 
-/** Rejects requests that are not multipart/form-data (required for file upload) */
+// Rejects requests that are not multipart/form-data (required for file upload)
 const requireMultipart = (action) => (req, res, next) => {
   const contentType = req.headers['content-type'] || '';
   if (!contentType.includes('multipart/form-data')) {

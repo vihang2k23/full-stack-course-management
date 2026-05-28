@@ -1,13 +1,11 @@
 import Course from '../models/Course.js';
 
-/** Ensures the course belongs to the logged-in user (per-user course isolation) */
+// Ensures the course belongs to the logged-in user (per-user course isolation)
 const findOwnedCourse = (id, userId) =>
   Course.findOne({ _id: id, createdBy: userId });
 
-/**
- * Creates a new course in the database.
- * The request body must contain all required course fields.
- */
+// Creates a new course in the database.
+// The request body must contain all required course fields.
 export const createCourse = async (req, res, next) => {
   try {
     const courseData = {
@@ -27,9 +25,7 @@ export const createCourse = async (req, res, next) => {
   }
 };
 
-/**
- * Retrieves courses owned by the logged-in user, sorted by newest first.
- */
+// Retrieves courses owned by the logged-in user, sorted by newest first.
 export const getAllCourses = async (req, res, next) => {
   try {
     const courses = await Course.find({ createdBy: req.user.id }).sort({ createdAt: -1 });
@@ -39,10 +35,8 @@ export const getAllCourses = async (req, res, next) => {
   }
 };
 
-/**
- * Fetches a single course by its unique ID.
- * Returns a 404 if the ID is valid but no course is found.
- */
+// Fetches a single course by its unique ID.
+// Returns a 404 if the ID is valid but no course is found.
 export const getCourseById = async (req, res, next) => {
   try {
     const course = await findOwnedCourse(req.params.id, req.user.id);
@@ -57,10 +51,8 @@ export const getCourseById = async (req, res, next) => {
   }
 };
 
-/**
- * Updates an existing course.
- * Uses `new: true` to return the updated document and `runValidators: true` to ensure schema rules are respected.
- */
+// Updates an existing course.
+// Uses `new: true` to return the updated document and `runValidators: true` to ensure schema rules are respected.
 export const updateCourse = async (req, res, next) => {
   try {
     const existingCourse = await findOwnedCourse(req.params.id, req.user.id);
@@ -99,9 +91,7 @@ export const updateCourse = async (req, res, next) => {
   }
 };
 
-/**
- * Deletes a course from the database by its ID.
- */
+// Deletes a course from the database by its ID.
 export const deleteCourse = async (req, res, next) => {
   try {
     const course = await Course.findOneAndDelete({

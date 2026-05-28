@@ -1,6 +1,4 @@
-/**
- * Global centralized error handling middleware.
- */
+// Global centralized error handling middleware.
 const errorMiddleware = (err, req, res, next) => {
   if (err.code === 11000) {
     return res.status(400).json({ success: false, message: 'User already exists' });

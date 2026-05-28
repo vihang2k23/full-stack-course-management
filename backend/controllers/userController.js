@@ -7,7 +7,7 @@ import { sendWelcomeEmail } from '../config/mailer.js';
 import { USER_UPLOADS_DIR } from '../config/paths.js';
 import ROLES from '../constants/roles.constants.js';
 
-/** Removes a previous profile image from disk when the user uploads a new one */
+// Removes a previous profile image from disk when the user uploads a new one
 const deleteUserImageFile = (imagePath) => {
   if (!imagePath?.startsWith('/uploads/users/')) return;
   const filePath = path.join(USER_UPLOADS_DIR, path.basename(imagePath));
@@ -25,10 +25,8 @@ const formatUser = (user) => ({
   image: user.image || '',
 });
 
-/**
- * Registers a new user.
- * Hashes the password and automatically issues an auth token upon successful registration.
- */
+// Registers a new user.
+// Hashes the password and automatically issues an auth token upon successful registration.
 export const signup = async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body;
@@ -69,9 +67,7 @@ export const signup = async (req, res, next) => {
   }
 };
 
-/**
- * Authenticates a user by email and password, issuing a new session token on success.
- */
+// Authenticates a user by email and password, issuing a new session token on success.
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -107,9 +103,7 @@ export const login = async (req, res, next) => {
   }
 };
 
-/**
- * Returns the logged-in user's profile (including profile image).
- */
+// Returns the logged-in user's profile (including profile image).
 export const getProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
@@ -126,9 +120,7 @@ export const getProfile = async (req, res, next) => {
   }
 };
 
-/**
- * Updates the logged-in user's profile (name and/or profile image).
- */
+// Updates the logged-in user's profile (name and/or profile image).
 export const updateProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
@@ -157,9 +149,7 @@ export const updateProfile = async (req, res, next) => {
   }
 };
 
-/**
- * Logs out the user by clearing their active token from the database.
- */
+// Logs out the user by clearing their active token from the database.
 export const logout = async (req, res, next) => {
   try {
     // req.user is populated by the authMiddleware

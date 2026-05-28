@@ -1,12 +1,10 @@
-/**
- * Course API — CRUD for the logged-in user's courses (multipart for create/update).
- */
+// Course API — CRUD for the logged-in user's courses (multipart for create/update).
 import { apiRequest } from './client';
 import { uploadImageUrl } from './uploads.js';
 
 export const courseImageUrl = uploadImageUrl;
 
-/** List courses owned by the current user */
+// List courses owned by the current user
 export const getCourses = () => apiRequest('/courses');
 
 export const createCourse = (formData) => {

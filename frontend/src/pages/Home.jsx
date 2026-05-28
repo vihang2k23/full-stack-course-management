@@ -1,4 +1,4 @@
-/** Landing page — hero and links to login, signup, or courses */
+// Landing page — hero and links to login, signup, or courses
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { uploadImageUrl } from '../api/uploads.js';

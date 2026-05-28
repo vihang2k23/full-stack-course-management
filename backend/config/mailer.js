@@ -4,10 +4,8 @@ import { RESET_EXPIRY_MS } from '../constants/reset.constants.js';
 // Convert milliseconds to minutes for the email template display
 const resetExpiryMinutes = Math.round(RESET_EXPIRY_MS / 60000);
 
-/**
- * Determines the frontend URL dynamically based on environment variables.
- * Falls back to localhost for local development environments.
- */
+// Determines the frontend URL dynamically based on environment variables.
+// Falls back to localhost for local development environments.
 const getFrontendUrl = () => {
   const urls = process.env.CLIENT_URL?.split(',').map((u) => u.trim()) || [];
   return urls.find((u) => u.includes('5173')) || urls[0] || 'http://localhost:5173';
@@ -27,10 +25,8 @@ const sendEmail = async ({ to, subject, html }) => {
   });
 };
 
-/**
- * Configures and returns a Nodemailer transporter instance.
- * Supports both Gmail service shortcuts and generic SMTP configurations.
- */
+// Configures and returns a Nodemailer transporter instance.
+// Supports both Gmail service shortcuts and generic SMTP configurations.
 const getTransporter = () => {
   const user = process.env.SMTP_USER?.trim();
   const pass = process.env.SMTP_PASS?.replace(/\s/g, '');
@@ -53,9 +49,7 @@ const getTransporter = () => {
   });
 };
 
-/**
- * Sends a welcome email after successful signup.
- */
+// Sends a welcome email after successful signup.
 export const sendWelcomeEmail = async ({ email, name }) => {
   const frontendUrl = getFrontendUrl();
   const loginLink = `${frontendUrl}/login`;
@@ -72,9 +66,7 @@ export const sendWelcomeEmail = async ({ email, name }) => {
   });
 };
 
-/**
- * Sends a password reset email containing both a secure OTP and a direct fallback link.
- */
+// Sends a password reset email containing both a secure OTP and a direct fallback link.
 export const sendResetEmail = async ({ email, otp, resetToken }) => {
   const frontendUrl = getFrontendUrl();
   const resetLink = `${frontendUrl}/verify-otp?token=${resetToken}`;

@@ -1,4 +1,4 @@
-/** Verify OTP from email — step 2 of password reset flow */
+// Verify OTP from email — step 2 of password reset flow
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { verifyOtp } from '../api/auth';

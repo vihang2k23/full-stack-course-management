@@ -1,8 +1,6 @@
 import { body } from 'express-validator';
 
-/**
- * Validates the initial request to send a password reset OTP.
- */
+// Validates the initial request to send a password reset OTP.
 export const forgotPasswordValidation = [
   body('email')
     .trim()
@@ -14,10 +12,8 @@ export const forgotPasswordValidation = [
     .normalizeEmail(),
 ];
 
-/**
- * Validates the OTP verification step.
- * Ensures both the session token and a 6-digit OTP are provided.
- */
+// Validates the OTP verification step.
+// Ensures both the session token and a 6-digit OTP are provided.
 export const verifyOtpValidation = [
   body('token').notEmpty().withMessage('Reset token is required'),
   body('otp')
@@ -28,10 +24,8 @@ export const verifyOtpValidation = [
     .withMessage('OTP must be 6 digits'),
 ];
 
-/**
- * Validates the final password reset step.
- * Checks for the temporary JWT (resetToken) and enforces the new password strength.
- */
+// Validates the final password reset step.
+// Checks for the temporary JWT (resetToken) and enforces the new password strength.
 export const resetPasswordValidation = [
   body('resetToken').notEmpty().withMessage('Reset session token is required'),
   body('password')

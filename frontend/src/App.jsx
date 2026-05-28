@@ -1,6 +1,4 @@
-/**
- * Root app — auth provider, router, and page routes.
- */
+// Root app — auth provider, router, and page routes.
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';

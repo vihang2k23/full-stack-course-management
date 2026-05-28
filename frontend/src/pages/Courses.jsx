@@ -1,6 +1,4 @@
-/**
- * Courses page — create/edit/delete user's own courses with image upload.
- */
+// Courses page — create/edit/delete user's own courses with image upload.
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import * as coursesApi from '../api/courses';
@@ -8,7 +6,7 @@ import * as authApi from '../api/auth';
 
 const emptyForm = { courseName: '', courseDuration: '', courseFees: '' };
 
-/** Extract filename from stored path for display in the edit form */
+// Extract filename from stored path for display in the edit form
 const fileNameFromPath = (imagePath) => {
   if (!imagePath) return '';
   const parts = imagePath.split('/');

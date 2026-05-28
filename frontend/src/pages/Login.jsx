@@ -1,4 +1,4 @@
-/** Login page — email/password, redirects to courses on success */
+// Login page — email/password, redirects to courses on success
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';

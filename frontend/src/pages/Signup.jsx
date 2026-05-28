@@ -1,4 +1,4 @@
-/** Signup page — multipart form with required profile photo */
+// Signup page — multipart form with required profile photo
 import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signup } from '../api/auth';

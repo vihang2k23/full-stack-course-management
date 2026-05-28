@@ -1,7 +1,5 @@
-/**
- * Multer configuration for course thumbnail images.
- * Saves files to uploads/courses/ with a unique timestamp-based filename.
- */
+// Multer configuration for course thumbnail images.
+// Saves files to uploads/courses/ with a unique timestamp-based filename.
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';

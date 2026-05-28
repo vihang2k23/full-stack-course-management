@@ -3,11 +3,9 @@ import ROLES from '../constants/roles.constants.js';
 import { USER_IMAGE_FIELD } from '../constants/upload.constants.js';
 import { requireUploadedImage } from './uploadValidator.js';
 
-/**
- * Validation rules for user registration.
- * Ensures data integrity and enforces security constraints (like password strength)
- * before the request hits the controller.
- */
+// Validation rules for user registration.
+// Ensures data integrity and enforces security constraints (like password strength)
+// before the request hits the controller.
 export const signupValidation = [
   body('name')
     .trim()
@@ -41,10 +39,8 @@ export const signupValidation = [
   ...requireUploadedImage(USER_IMAGE_FIELD),
 ];
 
-/**
- * Validation rules for user login.
- * Basic checks to ensure required fields are present and formatted correctly.
- */
+// Validation rules for user login.
+// Basic checks to ensure required fields are present and formatted correctly.
 export const loginValidation = [
   body('email')
     .trim()
@@ -58,7 +54,7 @@ export const loginValidation = [
   body('password').notEmpty().withMessage('Password is required'),
 ];
 
-/** Update profile — name optional, new profile image required */
+// Update profile — name optional, new profile image required
 export const updateProfileValidation = [
   body('name')
     .optional()

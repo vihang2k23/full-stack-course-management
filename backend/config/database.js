@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import colors from 'colors';
 
-/**
- * Establishes a connection to the MongoDB database using Mongoose.
- */
+// Establishes a connection to the MongoDB database using Mongoose.
 const connectDatabase = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI);

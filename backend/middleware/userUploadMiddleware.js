@@ -1,7 +1,5 @@
-/**
- * Multer configuration for user profile images (signup and profile update).
- * Saves files to uploads/users/ with a unique timestamp-based filename.
- */
+// Multer configuration for user profile images (signup and profile update).
+// Saves files to uploads/users/ with a unique timestamp-based filename.
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';

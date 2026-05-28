@@ -1,12 +1,10 @@
-/**
- * Top navigation — brand links, profile avatar (links to /profile), logout.
- */
+// Top navigation — brand links, profile avatar (links to /profile), logout.
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { uploadImageUrl } from '../api/uploads.js';
 
-/** Fallback letters when no profile image is available */
+// Fallback letters when no profile image is available
 const getInitials = (name = '') =>
   name
     .trim()

@@ -1,10 +1,10 @@
-/** Profile page — change display name and profile photo */
+// Profile page — change display name and profile photo
 import { useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { updateProfile } from '../api/auth';
 import { uploadImageUrl } from '../api/uploads';
 
-/** Fallback letters when no profile image is set */
+// Fallback letters when no profile image is set
 const getInitials = (name = '') =>
   name
     .trim()

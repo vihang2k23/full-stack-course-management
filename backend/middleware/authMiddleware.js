@@ -1,10 +1,8 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-/**
- * Global authentication middleware.
- * Verifies JWT tokens and attaches the authenticated user to the request object.
- */
+// Global authentication middleware.
+// Verifies JWT tokens and attaches the authenticated user to the request object.
 const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;

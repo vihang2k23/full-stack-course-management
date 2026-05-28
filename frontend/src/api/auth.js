@@ -1,9 +1,7 @@
-/**
- * Auth API — signup/login, profile, logout, and password reset helpers.
- */
+// Auth API — signup/login, profile, logout, and password reset helpers.
 import { apiRequest } from './client';
 
-/** Register with multipart FormData (name, email, password, role, image) */
+// Register with multipart FormData (name, email, password, role, image)
 export const signup = (formData) => {
   if (!(formData instanceof FormData)) {
     throw new Error('signup requires FormData with user fields and profile image');
@@ -14,10 +12,10 @@ export const signup = (formData) => {
 export const login = (body) =>
   apiRequest('/auth/login', { method: 'POST', body: JSON.stringify(body) });
 
-/** Fetch current user from server (refreshes image and name) */
+// Fetch current user from server (refreshes image and name)
 export const getProfile = () => apiRequest('/auth/me');
 
-/** Update display name and profile photo (multipart FormData) */
+// Update display name and profile photo (multipart FormData)
 export const updateProfile = (formData) => {
   if (!(formData instanceof FormData)) {
     throw new Error('updateProfile requires FormData with profile image');

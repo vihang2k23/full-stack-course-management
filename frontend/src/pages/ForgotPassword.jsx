@@ -1,4 +1,4 @@
-/** Forgot password — request OTP and reset link by email */
+// Forgot password — request OTP and reset link by email
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { forgotPassword } from '../api/auth';

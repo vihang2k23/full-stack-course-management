@@ -1,6 +1,4 @@
-/**
- * Absolute paths for uploaded files (anchored to backend/, not process.cwd()).
- */
+// Absolute paths for uploaded files (anchored to backend/, not process.cwd()).
 import path from 'path';
 import { fileURLToPath } from 'url';
 

@@ -18,9 +18,7 @@ const successMessage = {
   message: 'If that email exists, we sent reset instructions.',
 };
 
-/**
- * Initiates the password reset process by generating an OTP and sending it via email.
- */
+// Initiates the password reset process by generating an OTP and sending it via email.
 export const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -75,10 +73,8 @@ export const forgotPassword = async (req, res, next) => {
   }
 };
 
-/**
- * Verifies the OTP provided by the user against the database record.
- * On success, grants a temporary JWT to proceed with the actual password change.
- */
+// Verifies the OTP provided by the user against the database record.
+// On success, grants a temporary JWT to proceed with the actual password change.
 export const verifyOtp = async (req, res, next) => {
   try {
     const { token, otp } = req.body;
@@ -119,9 +115,7 @@ export const verifyOtp = async (req, res, next) => {
   }
 };
 
-/**
- * Final step: Updates the user's password using the authorized JWT from the verify step.
- */
+// Final step: Updates the user's password using the authorized JWT from the verify step.
 export const resetPassword = async (req, res, next) => {
   try {
     const { resetToken, password } = req.body;

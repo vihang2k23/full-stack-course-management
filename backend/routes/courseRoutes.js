@@ -1,6 +1,4 @@
-/**
- * Course routes — all require auth; create/update use multipart image upload.
- */
+// Course routes — all require auth; create/update use multipart image upload.
 import express from 'express';
 import {
   createCourse,
@@ -22,7 +20,7 @@ import { COURSE_IMAGE_FIELD } from '../constants/upload.constants.js';
 // Multer middleware — expects form field name "image"
 const courseImageUpload = upload.single(COURSE_IMAGE_FIELD);
 
-/** Reject JSON body on create — course POST must be multipart/form-data */
+// Reject JSON body on create — course POST must be multipart/form-data
 const requireMultipartBody = (req, res, next) => {
   const contentType = req.headers['content-type'] || '';
   if (!contentType.includes('multipart/form-data')) {

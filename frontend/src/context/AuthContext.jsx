@@ -1,7 +1,5 @@
-/**
- * Global auth state — user, JWT token, persisted in localStorage.
- * Refreshes profile from GET /auth/me when a token is present.
- */
+// Global auth state — user, JWT token, persisted in localStorage.
+// Refreshes profile from GET /auth/me when a token is present.
 import { createContext, useContext, useEffect, useState } from 'react';
 import * as authApi from '../api/auth';
 

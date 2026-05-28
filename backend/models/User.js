@@ -1,10 +1,8 @@
 import mongoose from 'mongoose';
 import ROLES from '../constants/roles.constants.js';
 
-/**
- * Mongoose schema definition for the User model.
- * Handles core user data, authentication state, and password reset fields.
- */
+// Mongoose schema definition for the User model.
+// Handles core user data, authentication state, and password reset fields.
 const userSchema = new mongoose.Schema(
   {
     name: {

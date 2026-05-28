@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken';
 
-/**
- * Generates a standard JSON Web Token (JWT) for user sessions.
- * Encodes the user's ID and Role, and sets a 7-day expiration.
- */
+// Generates a standard JSON Web Token (JWT) for user sessions.
+// Encodes the user's ID and Role, and sets a 7-day expiration.
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, role: user.role },
@@ -12,10 +10,8 @@ const generateToken = (user) => {
   );
 };
 
-/**
- * Generates a new token and saves it directly to the user's database record.
- * This allows for single-session enforcement (invalidating previous tokens).
- */
+// Generates a new token and saves it directly to the user's database record.
+// This allows for single-session enforcement (invalidating previous tokens).
 const saveUserToken = async (user) => {
   const token = generateToken(user);
   user.token = token;
