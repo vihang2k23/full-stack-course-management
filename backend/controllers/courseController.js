@@ -1,5 +1,8 @@
 import Course from '../models/Course.js';
 
+const findOwnedCourse = (id, userId) =>
+  Course.findOne({ _id: id, createdBy: userId });
+
 /**
  * Creates a new course in the database.
  * The request body must contain all required course fields.
@@ -20,7 +23,10 @@ export const createCourse = async (req, res, next) => {
       image: `/uploads/courses/${req.file.filename}`,
     };
 
-    const course = await Course.create(courseData);
+    const course = await Course.create({
+      ...courseData,
+      createdBy: req.user.id,
+    });
     res.status(201).json({ success: true, data: course });
   } catch (error) {
     next(error); // Pass validation or DB errors to the global error handler
@@ -28,11 +34,11 @@ export const createCourse = async (req, res, next) => {
 };
 
 /**
- * Retrieves all available courses, sorted by newest first.
+ * Retrieves courses owned by the logged-in user, sorted by newest first.
  */
 export const getAllCourses = async (req, res, next) => {
   try {
-    const courses = await Course.find().sort({ createdAt: -1 });
+    const courses = await Course.find({ createdBy: req.user.id }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, count: courses.length, data: courses });
   } catch (error) {
     next(error);
@@ -45,7 +51,7 @@ export const getAllCourses = async (req, res, next) => {
  */
 export const getCourseById = async (req, res, next) => {
   try {
-    const course = await Course.findById(req.params.id);
+    const course = await findOwnedCourse(req.params.id, req.user.id);
 
     if (!course) {
       return res.status(404).json({ success: false, message: 'Course not found' });
@@ -63,9 +69,7 @@ export const getCourseById = async (req, res, next) => {
  */
 export const updateCourse = async (req, res, next) => {
   try {
-
-
-     const existingCourse = await Course.findById(req.params.id);
+    const existingCourse = await findOwnedCourse(req.params.id, req.user.id);
 
     if (!existingCourse) {
       return res.status(404).json({
@@ -86,13 +90,10 @@ export const updateCourse = async (req, res, next) => {
         : existingCourse.image,
     };
 
-    const updatedCourse = await Course.findByIdAndUpdate(
-      req.params.id,
+    const updatedCourse = await Course.findOneAndUpdate(
+      { _id: req.params.id, createdBy: req.user.id },
       updatedData,
-      {
-        new: true,
-        runValidators: true,
-      }
+      { new: true, runValidators: true }
     );
 
     res.status(200).json({
@@ -109,7 +110,10 @@ export const updateCourse = async (req, res, next) => {
  */
 export const deleteCourse = async (req, res, next) => {
   try {
-    const course = await Course.findByIdAndDelete(req.params.id);
+    const course = await Course.findOneAndDelete({
+      _id: req.params.id,
+      createdBy: req.user.id,
+    });
 
     if (!course) {
       return res.status(404).json({ success: false, message: 'Course not found' });

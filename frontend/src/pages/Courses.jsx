@@ -260,11 +260,11 @@ export default function Courses() {
       </form>
 
       <div className="card">
-        <h2>All courses ({courses.length})</h2>
+        <h2>My courses ({courses.length})</h2>
         {loading ? (
           <p>Loading...</p>
         ) : courses.length === 0 ? (
-          <p>No courses yet.</p>
+          <p>No courses yet. Create one above — only your courses appear here.</p>
         ) : (
           <table>
             <thead>
