@@ -1,3 +1,4 @@
+/** Verify OTP from email — step 2 of password reset flow */
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { verifyOtp } from '../api/auth';
@@ -36,37 +37,49 @@ export default function VerifyOtp() {
 
   if (!linkToken) {
     return (
-      <div className="page narrow">
-        <p className="error">Invalid reset link. Request a new one.</p>
-        <Link to="/forgot-password">Forgot password</Link>
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="card">
+            <p className="error">Invalid reset link. Request a new one.</p>
+            <Link to="/forgot-password" className="btn">
+              Forgot password
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="page narrow">
-      <h1>Verify OTP</h1>
-      <p>Enter the 6-digit code from your email.</p>
-      <form className="card form" onSubmit={handleSubmit}>
-        {error && <p className="error">{error}</p>}
-        <label>
-          OTP
-          <input
-            type="text"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-            maxLength={6}
-            placeholder="123456"
-            required
-          />
-        </label>
-        <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'Verifying...' : 'Next'}
-        </button>
-      </form>
-      <p>
-        <Link to="/forgot-password">Resend OTP</Link>
-      </p>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1>Verify OTP</h1>
+        <p className="auth-lead">Enter the 6-digit code from your email</p>
+        <form className="card form" onSubmit={handleSubmit}>
+          {error && <p className="error">{error}</p>}
+          <label>
+            One-time password
+            <input
+              className="otp-input"
+              type="text"
+              inputMode="numeric"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              maxLength={6}
+              placeholder="000000"
+              required
+            />
+          </label>
+          <button type="submit" className="btn" disabled={loading}>
+            {loading ? 'Verifying...' : 'Continue'}
+          </button>
+        </form>
+        <div className="auth-footer">
+          <p>
+            <Link to="/forgot-password">Resend OTP</Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

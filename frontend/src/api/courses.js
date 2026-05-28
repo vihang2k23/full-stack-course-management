@@ -1,19 +1,12 @@
+/**
+ * Course API — CRUD for the logged-in user's courses (multipart for create/update).
+ */
 import { apiRequest } from './client';
+import { uploadImageUrl } from './uploads.js';
 
-const API_ORIGIN = (
-  import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'
-).replace(/\/api\/v1\/?$/, '');
+export const courseImageUrl = uploadImageUrl;
 
-/** Build full URL for image path stored in MongoDB (files live on API server disk). */
-export const courseImageUrl = (imagePath) => {
-  if (!imagePath) return '';
-  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-    return imagePath;
-  }
-  const normalized = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
-  return `${API_ORIGIN}${normalized}`;
-};
-
+/** List courses owned by the current user */
 export const getCourses = () => apiRequest('/courses');
 
 export const createCourse = (formData) => {

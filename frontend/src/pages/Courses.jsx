@@ -1,14 +1,22 @@
+/**
+ * Courses page — create/edit/delete user's own courses with image upload.
+ */
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import * as coursesApi from '../api/courses';
 import * as authApi from '../api/auth';
+
 const emptyForm = { courseName: '', courseDuration: '', courseFees: '' };
 
+/** Extract filename from stored path for display in the edit form */
 const fileNameFromPath = (imagePath) => {
   if (!imagePath) return '';
   const parts = imagePath.split('/');
   return parts[parts.length - 1] || '';
 };
+
+const formatFees = (fees) =>
+  new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(fees);
 
 export default function Courses() {
   const { user } = useAuth();
@@ -25,6 +33,7 @@ export default function Courses() {
   const [error, setError] = useState('');
   const [dashboardMsg, setDashboardMsg] = useState('');
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const loadCourses = async () => {
     setLoading(true);
@@ -107,6 +116,7 @@ export default function Courses() {
     }
 
     const formData = buildFormData();
+    setSubmitting(true);
 
     try {
       if (editId) {
@@ -120,6 +130,8 @@ export default function Courses() {
       loadCourses();
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -136,6 +148,7 @@ export default function Courses() {
     setExistingImage(course.image || '');
     setExistingImageFileName(fileNameFromPath(course.image));
     setFileInputKey((k) => k + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {
@@ -157,155 +170,190 @@ export default function Courses() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Courses</h1>
-        <button type="button" className="btn secondary" onClick={loadDashboard}>
-          Check dashboard API
+        <div>
+          <h1>My courses</h1>
+          <p className="page-subtitle">
+            Hi {user.name} — create and manage courses that belong only to your account.
+          </p>
+        </div>
+        <button type="button" className="btn secondary btn-sm" onClick={loadDashboard}>
+          Test dashboard API
         </button>
       </div>
 
       {dashboardMsg && <p className="success">{dashboardMsg}</p>}
       {error && <p className="error">{error}</p>}
 
-      <form className="card form" encType="multipart/form-data" onSubmit={handleSubmit}>
-        <h2>{editId ? 'Edit course' : 'Add course'}</h2>
-        <p className="hint">
-          Course data is saved in Atlas (database <strong>test</strong>, collection{' '}
-          <strong>courses</strong>). The image file stays on this server; Atlas stores only the
-          path in the <code>image</code> field.
-        </p>
-        <label>
-          Course name
-          <input name="courseName" value={form.courseName} onChange={handleChange} required />
-        </label>
-        <label>
-          Duration
-          <input
-            name="courseDuration"
-            value={form.courseDuration}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          Fees
-          <input
-            type="number"
-            name="courseFees"
-            value={form.courseFees}
-            onChange={handleChange}
-            min="0"
-            required
-          />
-        </label>
-        <div className="file-field">
-          <span className="file-field-label">Course image</span>
-          <input
-            ref={fileInputRef}
-            key={`${editId || 'new'}-${fileInputKey}`}
-            className="file-input-hidden"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            onChange={handleImageChange}
-            required={!editId && !imageFile}
-          />
-          <div className="file-field-row">
-            <button
-              type="button"
-              className="btn secondary file-choose-btn"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {imageFile || (editId && existingImage) ? 'Change image' : 'Choose image'}
-            </button>
-            {editId && existingImageFileName && !imageFile && (
-              <span className="file-name-tag" title={existingImageFileName}>
-                Current: {existingImageFileName}
-              </span>
-            )}
-            {editId && selectedImageFileName && imageFile && (
-              <span className="file-name-tag" title={selectedImageFileName}>
-                New: {selectedImageFileName}
-              </span>
-            )}
-          </div>
-        </div>
-        {editId && existingImage && !imagePreview && (
-          <div className="image-preview-block">
-            <p className="hint">Current image</p>
-            <img
-              className="course-thumb"
-              src={coursesApi.courseImageUrl(existingImage)}
-              alt="Current course"
+      <div className="courses-layout">
+        <form
+          className="card form form-card"
+          encType="multipart/form-data"
+          onSubmit={handleSubmit}
+        >
+          <h2>{editId ? 'Edit course' : 'Add new course'}</h2>
+
+          <label>
+            Course name
+            <input
+              name="courseName"
+              value={form.courseName}
+              onChange={handleChange}
+              placeholder="e.g. Full Stack Development"
+              required
             />
+          </label>
+          <label>
+            Duration
+            <input
+              name="courseDuration"
+              value={form.courseDuration}
+              onChange={handleChange}
+              placeholder="e.g. 6 months"
+              required
+            />
+          </label>
+          <label>
+            Fees (USD)
+            <input
+              type="number"
+              name="courseFees"
+              value={form.courseFees}
+              onChange={handleChange}
+              placeholder="0"
+              min="0"
+              required
+            />
+          </label>
+
+          <div className="file-field">
+            <span className="file-field-label">Course image</span>
+            <input
+              ref={fileInputRef}
+              key={`${editId || 'new'}-${fileInputKey}`}
+              className="file-input-hidden"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleImageChange}
+              required={!editId && !imageFile}
+            />
+            <div className="file-drop-zone">
+              <p className="hint" style={{ marginBottom: '0.75rem' }}>
+                JPEG, PNG or WebP
+              </p>
+              <button
+                type="button"
+                className="btn secondary btn-sm"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {imageFile || (editId && existingImage) ? 'Change image' : 'Choose image'}
+              </button>
+              {editId && existingImageFileName && !imageFile && (
+                <p className="file-name-tag" style={{ marginTop: '0.75rem' }} title={existingImageFileName}>
+                  Current: {existingImageFileName}
+                </p>
+              )}
+              {selectedImageFileName && imageFile && (
+                <p className="file-name-tag" style={{ marginTop: '0.75rem' }} title={selectedImageFileName}>
+                  Selected: {selectedImageFileName}
+                </p>
+              )}
+            </div>
           </div>
-        )}
-        {imagePreview && (
-          <div className="image-preview-block">
-            <p className="hint">{editId ? 'New image preview' : 'Preview'}</p>
-            <img className="course-thumb" src={imagePreview} alt="Selected course" />
-          </div>
-        )}
-        {editId && !imageFile && (
-          <p className="hint">Leave image empty to keep the current picture.</p>
-        )}
-        <div className="row">
-          <button type="submit" className="btn">
-            {editId ? 'Update' : 'Create'}
-          </button>
-          {editId && (
-            <button type="button" className="btn secondary" onClick={cancelEdit}>
-              Cancel
+
+          {editId && existingImage && !imagePreview && (
+            <div className="image-preview-block">
+              <p className="hint">Current image</p>
+              <img
+                className="course-thumb-lg"
+                src={coursesApi.courseImageUrl(existingImage)}
+                alt="Current course"
+              />
+            </div>
+          )}
+          {imagePreview && (
+            <div className="image-preview-block">
+              <p className="hint">{editId ? 'New preview' : 'Preview'}</p>
+              <img className="course-thumb-lg" src={imagePreview} alt="Selected course" />
+            </div>
+          )}
+          {editId && !imageFile && (
+            <p className="hint">Leave image empty to keep the current picture.</p>
+          )}
+
+          <div className="row">
+            <button type="submit" className="btn" disabled={submitting}>
+              {submitting ? 'Saving...' : editId ? 'Update course' : 'Create course'}
             </button>
+            {editId && (
+              <button type="button" className="btn secondary" onClick={cancelEdit}>
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+
+        <div className="card">
+          <div className="card-header">
+            <h2>Your catalog</h2>
+            <span className="course-count">{courses.length} courses</span>
+          </div>
+
+          {loading ? (
+            <div className="loading-state">
+              <span className="spinner" aria-hidden />
+              Loading courses...
+            </div>
+          ) : courses.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon" aria-hidden>
+                📚
+              </div>
+              <p>No courses yet</p>
+              <p className="hint">Use the form to add your first course.</p>
+            </div>
+          ) : (
+            <div className="course-grid">
+              {courses.map((course) => (
+                <article key={course._id} className="course-card">
+                  {course.image ? (
+                    <img
+                      className="course-card-image"
+                      src={coursesApi.courseImageUrl(course.image)}
+                      alt={course.courseName}
+                    />
+                  ) : (
+                    <div className="course-card-image placeholder" aria-hidden>
+                      📷
+                    </div>
+                  )}
+                  <div className="course-card-body">
+                    <h3>{course.courseName}</h3>
+                    <div className="course-meta">
+                      <span>⏱ {course.courseDuration}</span>
+                      <span className="course-fees">{formatFees(course.courseFees)}</span>
+                    </div>
+                    <div className="course-card-actions">
+                      <button
+                        type="button"
+                        className="btn secondary btn-sm"
+                        onClick={() => handleEdit(course)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="btn danger btn-sm"
+                        onClick={() => handleDelete(course._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           )}
         </div>
-      </form>
-
-      <div className="card">
-        <h2>My courses ({courses.length})</h2>
-        {loading ? (
-          <p>Loading...</p>
-        ) : courses.length === 0 ? (
-          <p>No courses yet. Create one above — only your courses appear here.</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Duration</th>
-                <th>Fees</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((course) => (
-                <tr key={course._id}>
-                  <td>
-                    {course.image ? (
-                      <img
-                        className="course-thumb"
-                        src={coursesApi.courseImageUrl(course.image)}
-                        alt={course.courseName}
-                      />
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                  <td>{course.courseName}</td>
-                  <td>{course.courseDuration}</td>
-                  <td>{course.courseFees}</td>
-                  <td className="row">
-                    <button type="button" onClick={() => handleEdit(course)}>
-                      Edit
-                    </button>
-                    <button type="button" className="danger" onClick={() => handleDelete(course._id)}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+/** Login page — email/password, redirects to courses on success */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
@@ -31,40 +32,47 @@ export default function Login() {
   };
 
   return (
-    <div className="page narrow">
-      <h1>Login</h1>
-      <form className="card form" onSubmit={handleSubmit}>
-        {error && <p className="error">{error}</p>}
-        <label>
-          Email
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label>
-          Password
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
-      <p>
-        <Link to="/forgot-password">Forgot password?</Link>
-      </p>
-      <p>
-        No account? <Link to="/signup">Signup</Link>
-      </p>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1>Welcome back</h1>
+        <p className="auth-lead">Sign in to manage your courses</p>
+        <form className="card form" onSubmit={handleSubmit}>
+          {error && <p className="error">{error}</p>}
+          <label>
+            Email
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              required
+            />
+          </label>
+          <label>
+            Password
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+            />
+          </label>
+          <button type="submit" className="btn" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+        <div className="auth-footer">
+          <p>
+            <Link to="/forgot-password">Forgot password?</Link>
+          </p>
+          <p>
+            No account? <Link to="/signup">Sign up</Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

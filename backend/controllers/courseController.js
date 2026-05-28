@@ -1,5 +1,6 @@
 import Course from '../models/Course.js';
 
+/** Ensures the course belongs to the logged-in user (per-user course isolation) */
 const findOwnedCourse = (id, userId) =>
   Course.findOne({ _id: id, createdBy: userId });
 
@@ -9,13 +10,6 @@ const findOwnedCourse = (id, userId) =>
  */
 export const createCourse = async (req, res, next) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: 'Course image is required. Send multipart/form-data with file field "image".',
-      });
-    }
-
     const courseData = {
       courseName: req.body.courseName,
       courseDuration: req.body.courseDuration,

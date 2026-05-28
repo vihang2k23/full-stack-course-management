@@ -1,3 +1,6 @@
+/**
+ * Root app — auth provider, router, and page routes.
+ */
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
@@ -9,6 +12,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import VerifyOtp from './pages/VerifyOtp';
 import ResetPassword from './pages/ResetPassword';
 import Courses from './pages/Courses';
+import Profile from './pages/Profile';
 import './App.css';
 
 function App() {
@@ -29,6 +33,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Courses />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               }
             />

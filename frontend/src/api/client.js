@@ -1,3 +1,6 @@
+/**
+ * Shared fetch wrapper — attaches JWT, handles JSON errors, supports FormData uploads.
+ */
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
 export async function apiRequest(path, options = {}) {

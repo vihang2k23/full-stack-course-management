@@ -1,3 +1,4 @@
+/** Set new password — final step after OTP verification */
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { resetPassword } from '../api/auth';
@@ -30,9 +31,15 @@ export default function ResetPassword() {
 
   if (!resetJwt) {
     return (
-      <div className="page narrow">
-        <p className="error">Session expired. Verify OTP again.</p>
-        <Link to="/forgot-password">Forgot password</Link>
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="card">
+            <p className="error">Session expired. Verify OTP again.</p>
+            <Link to="/forgot-password" className="btn">
+              Forgot password
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -62,48 +69,54 @@ export default function ResetPassword() {
 
   if (success) {
     return (
-      <div className="page narrow">
-        <div className="card">
-          <p className="success">{success}</p>
-          <p>Login with your new password.</p>
-          <Link to="/login" className="btn">
-            Go to login
-          </Link>
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="card" style={{ textAlign: 'center' }}>
+            <p className="success">{success}</p>
+            <p className="hint">Login with your new password.</p>
+            <Link to="/login" className="btn">
+              Go to login
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="page narrow">
-      <h1>Reset password</h1>
-      <p className="hint">You have 1 hour after OTP verification to set a new password.</p>
-      <form className="card form" onSubmit={handleSubmit}>
-        {error && <p className="error">{error}</p>}
-        <label>
-          New password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={8}
-            required
-          />
-        </label>
-        <label>
-          Confirm password
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            minLength={8}
-            required
-          />
-        </label>
-        <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'Resetting...' : 'Reset password'}
-        </button>
-      </form>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1>New password</h1>
+        <p className="auth-lead">You have 1 hour after OTP verification to set a new password</p>
+        <form className="card form" onSubmit={handleSubmit}>
+          {error && <p className="error">{error}</p>}
+          <label>
+            New password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Min. 8 characters"
+              minLength={8}
+              required
+            />
+          </label>
+          <label>
+            Confirm password
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Repeat password"
+              minLength={8}
+              required
+            />
+          </label>
+          <button type="submit" className="btn" disabled={loading}>
+            {loading ? 'Resetting...' : 'Reset password'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

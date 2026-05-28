@@ -1,5 +1,7 @@
 import { body } from 'express-validator';
 import ROLES from '../constants/roles.constants.js';
+import { USER_IMAGE_FIELD } from '../constants/upload.constants.js';
+import { requireUploadedImage } from './uploadValidator.js';
 
 /**
  * Validation rules for user registration.
@@ -35,6 +37,8 @@ export const signupValidation = [
     .optional()
     .isIn(Object.values(ROLES))
     .withMessage('Invalid role'),
+
+  ...requireUploadedImage(USER_IMAGE_FIELD),
 ];
 
 /**
@@ -52,4 +56,15 @@ export const loginValidation = [
     .normalizeEmail(),
 
   body('password').notEmpty().withMessage('Password is required'),
+];
+
+/** Update profile — name optional, new profile image required */
+export const updateProfileValidation = [
+  body('name')
+    .optional()
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage('Name must be at least 2 characters'),
+
+  ...requireUploadedImage(USER_IMAGE_FIELD),
 ];

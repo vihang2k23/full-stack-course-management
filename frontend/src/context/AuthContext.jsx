@@ -1,3 +1,7 @@
+/**
+ * Global auth state — user, JWT token, persisted in localStorage.
+ * Refreshes profile from GET /auth/me when a token is present.
+ */
 import { createContext, useContext, useEffect, useState } from 'react';
 import * as authApi from '../api/auth';
 
@@ -20,6 +24,21 @@ export function AuthProvider({ children }) {
     else localStorage.removeItem('user');
   }, [user]);
 
+  // On load / token change — sync user from server (picks up profile image updates)
+  useEffect(() => {
+    if (!token) return;
+
+    authApi
+      .getProfile()
+      .then((data) => {
+        if (data.user) setUser(data.user);
+      })
+      .catch(() => {
+        setToken(null);
+        setUser(null);
+      });
+  }, [token]);
+
   const loginUser = (data) => {
     setToken(data.token);
     setUser(data.user);
@@ -28,6 +47,10 @@ export function AuthProvider({ children }) {
   const signupUser = (data) => {
     setToken(data.token);
     setUser(data.user);
+  };
+
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
   };
 
   const logoutUser = async () => {
@@ -43,7 +66,15 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, isLoggedIn: !!token, loginUser, signupUser, logoutUser }}
+      value={{
+        user,
+        token,
+        isLoggedIn: !!token,
+        loginUser,
+        signupUser,
+        updateUser,
+        logoutUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

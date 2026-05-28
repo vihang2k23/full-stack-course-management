@@ -1,8 +1,20 @@
+import fs from 'fs';
+import path from 'path';
 import User from '../models/User.js';
 import { saveUserToken } from '../utils/generateToken.js';
 import { hashPassword, comparePassword } from '../utils/authUtils.js';
 import { sendWelcomeEmail } from '../config/mailer.js';
+import { USER_UPLOADS_DIR } from '../config/paths.js';
 import ROLES from '../constants/roles.constants.js';
+
+/** Removes a previous profile image from disk when the user uploads a new one */
+const deleteUserImageFile = (imagePath) => {
+  if (!imagePath?.startsWith('/uploads/users/')) return;
+  const filePath = path.join(USER_UPLOADS_DIR, path.basename(imagePath));
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+};
 
 // Helper function to strip sensitive data (like passwords and tokens) before sending to the client
 const formatUser = (user) => ({
@@ -10,6 +22,7 @@ const formatUser = (user) => ({
   name: user.name,
   email: user.email,
   role: user.role,
+  image: user.image || '',
 });
 
 /**
@@ -29,11 +42,11 @@ export const signup = async (req, res, next) => {
       });
     }
 
-    // Hash the password manually before creation
     const user = await User.create({
       name,
       email,
       password: await hashPassword(password),
+      image: `/uploads/users/${req.file.filename}`,
       role: role || ROLES.USER,
     });
 
@@ -87,6 +100,56 @@ export const login = async (req, res, next) => {
       success: true,
       message: 'Login successful',
       token,
+      user: formatUser(user),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Returns the logged-in user's profile (including profile image).
+ */
+export const getProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      user: formatUser(user),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Updates the logged-in user's profile (name and/or profile image).
+ */
+export const updateProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (req.body.name?.trim()) {
+      user.name = req.body.name.trim();
+    }
+
+    if (req.file) {
+      deleteUserImageFile(user.image);
+      user.image = `/uploads/users/${req.file.filename}`;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated',
       user: formatUser(user),
     });
   } catch (error) {

@@ -1,5 +1,14 @@
+/**
+ * Authentication routes: signup, login, profile, logout, and password reset flow.
+ */
 import express from 'express';
-import { signup, login, logout } from '../controllers/userController.js';
+import {
+  signup,
+  login,
+  logout,
+  getProfile,
+  updateProfile,
+} from '../controllers/userController.js';
 import {
   forgotPassword,
   verifyOtp,
@@ -7,19 +16,57 @@ import {
 } from '../controllers/passwordController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import validateMiddleware from '../middleware/validateMiddleware.js';
-import { signupValidation, loginValidation } from '../validators/authValidator.js';
+import userUpload from '../middleware/userUploadMiddleware.js';
+import {
+  signupValidation,
+  loginValidation,
+  updateProfileValidation,
+} from '../validators/authValidator.js';
 import {
   forgotPasswordValidation,
   verifyOtpValidation,
   resetPasswordValidation,
 } from '../validators/passwordValidator.js';
+import { USER_IMAGE_FIELD } from '../constants/upload.constants.js';
 import ROLES from '../constants/roles.constants.js';
+
+// Multer middleware — expects form field name "image"
+const profileImageUpload = userUpload.single(USER_IMAGE_FIELD);
+
+/** Rejects requests that are not multipart/form-data (required for file upload) */
+const requireMultipart = (action) => (req, res, next) => {
+  const contentType = req.headers['content-type'] || '';
+  if (!contentType.includes('multipart/form-data')) {
+    return res.status(400).json({
+      success: false,
+      message: `${action} requires multipart/form-data (FormData) with field "${USER_IMAGE_FIELD}" for the profile image.`,
+    });
+  }
+  next();
+};
 
 const router = express.Router();
 
 // --- Core Authentication Flow ---
-router.post('/signup', signupValidation, validateMiddleware, signup);
+router.post(
+  '/signup',
+  requireMultipart('Signup'),
+  profileImageUpload,
+  signupValidation,
+  validateMiddleware,
+  signup
+);
 router.post('/login', loginValidation, validateMiddleware, login);
+router.get('/me', authMiddleware, getProfile);
+router.put(
+  '/profile',
+  authMiddleware,
+  requireMultipart('Profile update'),
+  profileImageUpload,
+  updateProfileValidation,
+  validateMiddleware,
+  updateProfile
+);
 router.post('/logout', authMiddleware, logout);
 
 // --- Password Recovery Flow ---
@@ -29,10 +76,6 @@ router.post('/reset-password', resetPasswordValidation, validateMiddleware, rese
 
 // --- Role-Based Access Control (RBAC) Demos ---
 
-/**
- * User Dashboard Endpoint
- * Strictly restricted to standard users.
- */
 router.get('/user-dashboard', authMiddleware, (req, res) => {
   if (req.user.role !== ROLES.USER) {
     return res.status(403).json({
@@ -47,10 +90,6 @@ router.get('/user-dashboard', authMiddleware, (req, res) => {
   });
 });
 
-/**
- * Admin Dashboard Endpoint
- * Strictly restricted to administrators.
- */
 router.get('/admin-dashboard', authMiddleware, (req, res) => {
   if (req.user.role !== ROLES.ADMIN) {
     return res.status(403).json({
