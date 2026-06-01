@@ -6,21 +6,19 @@ import {
   getCourseById,
   updateCourse,
   deleteCourse,
-} from '../controllers/courseController.js';
-import authMiddleware from '../middleware/authMiddleware.js';
+} from '../controllers/CourseController.js';
+import { isTokenVerified } from '../policies/isTokenVerified.js';
 import validateMiddleware from '../middleware/validateMiddleware.js';
 import {
   courseIdValidation,
   createCourseValidation,
   updateCourseValidation,
-} from '../validators/courseValidator.js';
-import upload from '../middleware/uploadMiddleware.js';
-import { COURSE_IMAGE_FIELD } from '../constants/upload.constants.js';
+} from '../validators/courseValidationRules.js';
+import courseUpload from '../config/courseMulter.js';
+import { COURSE_IMAGE_FIELD } from '../constants/upload.js';
 
-// Multer middleware — expects form field name "image"
-const courseImageUpload = upload.single(COURSE_IMAGE_FIELD);
+const courseImageUpload = courseUpload.single(COURSE_IMAGE_FIELD);
 
-// Reject JSON body on create — course POST must be multipart/form-data
 const requireMultipartBody = (req, res, next) => {
   const contentType = req.headers['content-type'] || '';
   if (!contentType.includes('multipart/form-data')) {
@@ -37,13 +35,11 @@ const requireMultipartBody = (req, res, next) => {
 
 const router = express.Router();
 
-// Apply global authentication guard to all course routes implicitly
-router.use(authMiddleware);
+router.use(isTokenVerified);
 
-// --- Collection Level Routes ---
 router
   .route('/')
-  .get(getAllCourses) // Retrieve all courses
+  .get(getAllCourses)
   .post(
     requireMultipartBody,
     courseImageUpload,
@@ -52,10 +48,9 @@ router
     createCourse
   );
 
-// --- Document Level Routes ---
 router
   .route('/:id')
-  .get(courseIdValidation, validateMiddleware, getCourseById) // Retrieve a single course
+  .get(courseIdValidation, validateMiddleware, getCourseById)
   .put(
     requireMultipartBody,
     courseImageUpload,
@@ -64,6 +59,6 @@ router
     validateMiddleware,
     updateCourse
   )
-  .delete(courseIdValidation, validateMiddleware, deleteCourse); // Delete a course
+  .delete(courseIdValidation, validateMiddleware, deleteCourse);
 
 export default router;

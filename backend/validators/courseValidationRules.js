@@ -1,6 +1,6 @@
 import { body, param } from 'express-validator';
-import { COURSE_IMAGE_FIELD } from '../constants/upload.constants.js';
-import { requireUploadedImage } from './uploadValidator.js';
+import { COURSE_IMAGE_FIELD } from '../constants/upload.js';
+import { requireUploadedImage } from './uploadValidationRules.js';
 
 // Validates that route parameters intended to be MongoDB ObjectIds are structurally valid.
 // Prevents unnecessary database queries and CastErrors.

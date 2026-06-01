@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { RESET_JWT_EXPIRES } from '../constants/reset.constants.js';
+import { RESET_JWT_EXPIRES } from '../constants/reset.js';
 
 // Generates a random 6-digit One Time Password (OTP).
 export const generateOtp = () => {

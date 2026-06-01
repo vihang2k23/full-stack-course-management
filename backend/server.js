@@ -4,8 +4,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import colors from 'colors';
 import connectDatabase from './config/database.js';
-import routes from './routes/index.js';
-import errorMiddleware from './middleware/errorMiddleware.js';
+import Router from './routers/index.js';
+import errorHandler from './middleware/errorHandler.js';
 import { UPLOADS_DIR } from './config/paths.js';
 // Load environment variables from .env file
 dotenv.config();
@@ -43,7 +43,7 @@ app.use(
 // Serve uploaded files (path is anchored to backend/, not process.cwd())
 app.use('/uploads', express.static(UPLOADS_DIR));
 // Mount main application routes
-app.use('/api/v1', routes);
+app.use('/api/v1', Router);
 
 // Health check endpoint
 app.get('/', (req, res) => {
@@ -56,7 +56,7 @@ app.use((req, res) => {
 });
 
 // Global error handler must be the very last middleware
-app.use(errorMiddleware);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 

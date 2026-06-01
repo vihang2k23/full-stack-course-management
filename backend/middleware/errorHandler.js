@@ -1,5 +1,5 @@
 // Global centralized error handling middleware.
-const errorMiddleware = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
   if (err.code === 11000) {
     return res.status(400).json({ success: false, message: 'User already exists' });
   }
@@ -29,4 +29,4 @@ const errorMiddleware = (err, req, res, next) => {
   res.status(500).json({ success: false, message: 'Server error' });
 };
 
-export default errorMiddleware;
+export default errorHandler;

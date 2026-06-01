@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
-import ROLES from '../constants/roles.constants.js';
-import { USER_IMAGE_FIELD } from '../constants/upload.constants.js';
-import { requireUploadedImage } from './uploadValidator.js';
+import ROLES from '../constants/roles.js';
+import { USER_IMAGE_FIELD } from '../constants/upload.js';
+import { requireUploadedImage } from './uploadValidationRules.js';
 
 // Validation rules for user registration.
 // Ensures data integrity and enforces security constraints (like password strength)

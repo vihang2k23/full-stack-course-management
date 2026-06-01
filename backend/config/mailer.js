@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { RESET_EXPIRY_MS } from '../constants/reset.constants.js';
+import { RESET_EXPIRY_MS } from '../constants/reset.js';
 
 // Convert milliseconds to minutes for the email template display
 const resetExpiryMinutes = Math.round(RESET_EXPIRY_MS / 60000);

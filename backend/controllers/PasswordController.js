@@ -9,7 +9,7 @@ import {
   generateResetJwt,
   verifyResetJwt,
 } from '../utils/resetPassword.js';
-import { RESET_EXPIRY_MS } from '../constants/reset.constants.js';
+import { RESET_EXPIRY_MS } from '../constants/reset.js';
 
 // Generic response to prevent user enumeration attacks.
 // We return the same message whether the email exists or not.
