@@ -7,6 +7,7 @@ import connectDatabase from './config/database.js';
 import Router from './routers/index.js';
 import errorHandler from './middleware/errorHandler.js';
 import { UPLOADS_DIR } from './config/paths.js';
+import rateLimit  from  "express-rate-limit"
 // Load environment variables from .env file
 dotenv.config();
 
@@ -17,9 +18,19 @@ connectDatabase();
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map((url) => url.trim())
   : ['http://localhost:3000', 'http://localhost:5173'];
-
+console.log(allowedOrigins,"allowedOrigins")
 const app = express();
 
+
+// Set up rate limiter: maximum of 100 requests per 15 minutes per IP
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  message: "Too many requests from this IP, please try again after 15 minutes",
+});
+
+// Apply the rate limiter to all requests
+app.use(limiter);
 // HTTP request logger middleware for development
 app.use(morgan('dev'));
 
