@@ -18,7 +18,7 @@ connectDatabase();
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map((url) => url.trim())
   : ['http://localhost:3000', 'http://localhost:5173'];
-console.log(allowedOrigins,"allowedOrigins")
+
 const app = express();
 
 
